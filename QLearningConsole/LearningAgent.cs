@@ -36,19 +36,38 @@ namespace QLearningConsole
         public int SelectAction(int state)
         {
             // TODO: implementar ε-greedy
-            throw new NotImplementedException();
+            if (_rng.NextDouble() < Epsilon)
+            {
+                return _rng.Next(0, _numActions);
+            }
+            // En caso contrario: Explotación (mejor acción conocida)
+            return ArgMaxAction(state);
         }
 
         public int ArgMaxAction(int state)
         {
-            // TODO: devolver el índice de acción con mayor Q[state, a]
-            throw new NotImplementedException();
+            int bestAction = 0;
+            double maxVal = Q[state, 0];
+            for (int a = 1; a < _numActions; a++)
+            {
+                if (Q[state, a] > maxVal)
+                {
+                    maxVal = Q[state, a];
+                    bestAction = a;
+                }
+            }
+            return bestAction;
         }
 
         public double MaxQ(int state)
         {
             // TODO: devolver max_a Q[state, a]
-            throw new NotImplementedException();
+            double maxVal = Q[state, 0];
+            for (int a = 1; a < _numActions; a++)
+            {
+                if (Q[state, a] > maxVal) maxVal = Q[state, a];
+            }
+            return maxVal;
         }
 
         /// Regla Q-Learning (off-policy):
@@ -56,7 +75,8 @@ namespace QLearningConsole
         public void UpdateQLearning(int s, int a, double r, int sNext, bool done)
         {
             // TODO: implementar la actualización (cuidado con el caso terminal)
-            throw new NotImplementedException();
+            double target = done ? r : r + Gamma * MaxQ(sNext);
+            Q[s, a] += Alpha * (target - Q[s, a]);
         }
 
         /// Regla SARSA (on-policy):
@@ -65,7 +85,8 @@ namespace QLearningConsole
         public void UpdateSarsa(int s, int a, double r, int sNext, int aNext, bool done)
         {
             // TODO: implementar la actualización (cuidado con el caso terminal)
-            throw new NotImplementedException();
+            double target = done ? r : r + Gamma * Q[sNext, aNext];
+            Q[s, a] += Alpha * (target - Q[s, a]);
         }
 
         /// Ejecuta un episodio completo desde env.StartState hasta el final (terminal o maxSteps).
@@ -80,7 +101,41 @@ namespace QLearningConsole
             //       - actualizar Q con UpdateQLearning o UpdateSarsa según Algo
             //       - si done: salir
             //       - sincronizar state / action para la siguiente iteración
-            throw new NotImplementedException();
+            int state = env.StartState;
+            double totalReward = 0;
+            int steps = 0;
+            bool reached = false;
+
+            int action = SelectAction(state); // Acción inicial
+
+            while (steps < maxSteps)
+            {
+                // Realizar paso en el entorno
+                var (nextState, r, done) = env.Step(state, (Action)action, _rng);
+                totalReward += r;
+                steps++;
+
+                if (Algo == Algorithm.QLearning)
+                {
+                    UpdateQLearning(state, action, r, nextState, done);
+                    state = nextState;
+                    action = SelectAction(state); // Nueva acción para el siguiente paso
+                }
+                else // SARSA
+                {
+                    int nextAction = SelectAction(nextState); // Se elige a' antes de actualizar
+                    UpdateSarsa(state, action, r, nextState, nextAction, done);
+                    state = nextState;
+                    action = nextAction; // La acción elegida se mantiene para el siguiente paso
+                }
+
+                if (done)
+                {
+                    reached = (env.KindOf(nextState) == CellKind.Goal);
+                    break;
+                }
+            }
+            return new EpisodeResult(steps, totalReward, reached);
         }
     }
 
