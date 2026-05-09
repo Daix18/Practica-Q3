@@ -15,7 +15,7 @@ namespace QLearningConsole
         Coin
     }
 
-    public class Maze
+    public class Maze //representa el entorno del laberinto, con su estructura, recompensas y dinámica de transición
     {
         public int Rows { get; } //filas
         public int Cols { get; }//columnas 

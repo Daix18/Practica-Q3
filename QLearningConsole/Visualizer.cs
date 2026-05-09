@@ -90,7 +90,7 @@ namespace QLearningConsole
 
         public static void PrintQTable(LearningAgent agent, Maze m)
         {
-            // TODO: imprimir la tabla Q con columnas: Estado (r,c) | Up | Right | Down | Left
+            // DONE: imprimir la tabla Q con columnas: Estado (r,c) | Up | Right | Down | Left
             Console.WriteLine("(pendiente) PrintQTable");
             Console.WriteLine("\n--- Tabla Q completa (Estado (r,c) | Up | Right | Down | Left) ---");
             Console.WriteLine(new string('-', 65));
@@ -115,7 +115,7 @@ namespace QLearningConsole
 
         public static void PrintHeatmap(LearningAgent agent, Maze m)
         {
-            // TODO: imprimir V(s) = max_a Q[s,a] en forma de cuadrícula 2D
+            // DONE: imprimir V(s) = max_a Q[s,a] en forma de cuadrícula 2D
             Console.WriteLine("(pendiente) PrintHeatmap");
             PrintHorizontalLine(m.Cols);
 

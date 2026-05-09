@@ -21,6 +21,9 @@ namespace QLearningConsole
             Visualizer.PrintMaze(env);
 
             // TODO:
+            ExperimentConfig config = new ExperimentConfig();
+            Console.WriteLine(" Bienvenido al experimento de aprendizaje reforzado, a continuación personalizaras los valores del experimento introduciendo los siguiente valores (algoritmo, α, γ, recompensas, episodios, semilla).");
+            C
             //  1. Leer del usuario: algoritmo (SARSA/Q-Learning), α, γ, recompensas,
             //     nº de episodios, semilla.
             //  2. Llamar Experiment.Run.
