@@ -37,6 +37,7 @@ namespace QLearningConsole
         public static ExperimentResult Run(Maze env, ExperimentConfig cfg)
         {
             // TODO: crear LearningAgent con (env.NumStates, env.NumActions, algo, alpha, gamma, epsilon, seed)
+            LearningAgent agent = new LearningAgent(env.NumStates, env.NumActions, cfg.Algo, cfg.Alpha, cfg.Gamma, cfg.EpsilonStart, cfg.Seed);
             // TODO: bucle de episodios, decaer epsilon, acumular EpisodeResult, cronometrar con Stopwatch
             throw new NotImplementedException();
         }
