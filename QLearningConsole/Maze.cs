@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace QLearningConsole
 {
-    public enum Action { Up = 0, Right = 1, Down = 2, Left = 3 }
+    public enum Action { Up = 0, Right = 1, Down = 2, Left = 3 }//posibles acciones del agente
 
     public enum CellKind
     {
