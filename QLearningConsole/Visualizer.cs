@@ -92,6 +92,25 @@ namespace QLearningConsole
         {
             // TODO: imprimir la tabla Q con columnas: Estado (r,c) | Up | Right | Down | Left
             Console.WriteLine("(pendiente) PrintQTable");
+            Console.WriteLine("\n--- Tabla Q completa (Estado (r,c) | Up | Right | Down | Left) ---");
+            Console.WriteLine(new string('-', 65));
+            Console.WriteLine(" Estado (r,c) |    Up    |   Right  |   Down   |   Left   ");
+            Console.WriteLine(new string('-', 65));
+
+            for (int s = 0; s < m.NumStates; s++) //  NumStates de la clase Maze
+            {
+                // Obtenemos fila y columna 
+                (int r, int c) = m.ToRowCol(s);
+
+                Console.Write($"  ({r},{c})      |");
+                // Acceso a la matriz Q del agente
+                Console.Write($"{agent.Q[s, 0],9:F2} |");
+                Console.Write($"{agent.Q[s, 1],9:F2} |");
+                Console.Write($"{agent.Q[s, 2],9:F2} |");
+                Console.Write($"{agent.Q[s, 3],9:F2} |");
+                Console.WriteLine();
+            }
+            Console.WriteLine(new string('-', 65));
         }
 
         public static void PrintHeatmap(LearningAgent agent, Maze m)

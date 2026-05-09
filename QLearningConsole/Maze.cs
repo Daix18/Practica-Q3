@@ -7,7 +7,7 @@ namespace QLearningConsole
 {
     public enum Action { Up = 0, Right = 1, Down = 2, Left = 3 }//posibles acciones del agente
 
-    public enum CellKind
+    public enum CellKind //tipo de celda, puede ser vacía, meta, pozo o moneda
     {
         Empty,
         Goal,
@@ -17,10 +17,10 @@ namespace QLearningConsole
 
     public class Maze
     {
-        public int Rows { get; }
-        public int Cols { get; }
-        public int NumStates => Rows * Cols;
-        public int NumActions => 4;
+        public int Rows { get; } //filas
+        public int Cols { get; }//columnas 
+        public int NumStates => Rows * Cols;//estados
+        public int NumActions => 4;//acciones posibles x estado
 
         public int StartState { get; }
         public int GoalState { get; }
@@ -28,12 +28,12 @@ namespace QLearningConsole
         private readonly bool[,] _wall;
         private readonly CellKind[] _kind;
         private readonly double[] _cellBonus;
-        private readonly double[] _cellPitProb;
+        private readonly double[] _cellPitProb;//probabilidad de morir al caer en un pozo
 
         public double RewardGoal { get; set; } = 100.0;
         public double RewardStep { get; set; } = -1.0;
-        public double RewardPit { get; set; } = -100.0;
-        public double RewardCoin { get; set; } = 10.0;
+        public double RewardPit { get; set; } = -100.0;//muerte penaliza con recompensa negativa alta
+        public double RewardCoin { get; set; } = 10.0;//recompensa por recoger una moneda
 
         public Maze(int rows, int cols, int startState, int goalState)
         {
@@ -47,12 +47,12 @@ namespace QLearningConsole
             _cellBonus = new double[NumStates];
             _cellPitProb = new double[NumStates];
 
-            _kind[goalState] = CellKind.Goal;
+            _kind[goalState] = CellKind.Goal;//marca la celda de la meta
 
             BuildOuterWalls();
         }
 
-        private void BuildOuterWalls()
+        private void BuildOuterWalls()//construye las paredes exteriores del laberinto
         {
             for (int s = 0; s < NumStates; s++)
             {
@@ -64,10 +64,10 @@ namespace QLearningConsole
             }
         }
 
-        public (int r, int c) ToRowCol(int state) => (state / Cols, state % Cols);
-        public int ToState(int r, int c) => r * Cols + c;
+        public (int r, int c) ToRowCol(int state) => (state / Cols, state % Cols);// estado único -> fila, columna
+        public int ToState(int r, int c) => r * Cols + c; //fila, columna -> estado único
 
-        public void AddWall(int state, Action a)
+        public void AddWall(int state, Action a)//agrega una pared en la dirección dada desde el estado dado, y también marca la pared opuesta en el estado vecino
         {
             _wall[state, (int)a] = true;
             (int nr, int nc) = NeighbourRowCol(state, a);
@@ -78,7 +78,7 @@ namespace QLearningConsole
             }
         }
 
-        public void SetPit(int state, double probKill = 1.0)
+        public void SetPit(int state, double probKill = 1.0)//marca una celda como pozo con una probabilidad de muerte al caer en él
         {
             _kind[state] = CellKind.Pit;
             _cellPitProb[state] = probKill;
@@ -97,36 +97,36 @@ namespace QLearningConsole
         public (int nextState, double reward, bool done) Step(int state, Action a, Random rng)
         {
             if (IsWall(state, a))
-                return (state, RewardStep, false);
+                return (state, RewardStep, false);//si hay una pared, el agente no se mueve y recibe la recompensa por paso
 
             (int nr, int nc) = NeighbourRowCol(state, a);
-            int next = ToState(nr, nc);
+            int next = ToState(nr, nc);//estado vecino al que se movería el agente si no hay pared
 
-            double r = RewardStep;
+            double r = RewardStep;//recompensa base x pasar a una celda
             bool done = false;
 
             switch (_kind[next])
             {
                 case CellKind.Goal:
-                    r = RewardGoal;
+                    r = RewardGoal;//recompensa por alcanzar la meta
                     done = true;
                     break;
                 case CellKind.Pit:
                     if (rng.NextDouble() < _cellPitProb[next])
                     {
-                        r = RewardPit;
+                        r = RewardPit;//recompensa negativa por caer en un pozo
                         done = true;
                     }
                     break;
                 case CellKind.Coin:
-                    r = RewardCoin + RewardStep;
+                    r = RewardCoin + RewardStep; //recompensa base + bonus x recoger una moneda
                     break;
             }
 
             return (next, r, done);
         }
 
-        private (int r, int c) NeighbourRowCol(int state, Action a)
+        private (int r, int c) NeighbourRowCol(int state, Action a)//devuelve la fila y columna del estado vecino en la dirección dada
         {
             (int r, int c) = ToRowCol(state);
             return a switch
@@ -139,7 +139,7 @@ namespace QLearningConsole
             };
         }
 
-        private static Action Opposite(Action a) => a switch
+        private static Action Opposite(Action a) => a switch //devuelve la acción opuesta a la dada (útil para marcar paredes en ambos lados)
         {
             Action.Up => Action.Down,
             Action.Down => Action.Up,
@@ -148,7 +148,7 @@ namespace QLearningConsole
             _ => a
         };
 
-        public static Maze BuildDefault5x5()
+        public static Maze BuildDefault5x5()//construye un laberinto de 5x5 con paredes predefinidas, la meta en la esquina inferior derecha y el inicio en la esquina superior izquierda
         {
             var m = new Maze(5, 5, startState: 0, goalState: 24);
             m.AddWall(m.ToState(0, 1), Action.Right);
@@ -162,7 +162,7 @@ namespace QLearningConsole
             return m;
         }
 
-        public static Maze BuildDefault5x5WithHazards()
+        public static Maze BuildDefault5x5WithHazards()//lo mismo pro añade un pozo con probabilidad de muerte del 50% en el centro y monedas con diferentes bonificaciones en dos celdas
         {
             var m = BuildDefault5x5();
             m.SetPit(m.ToState(2, 2), probKill: 0.5);
@@ -171,7 +171,7 @@ namespace QLearningConsole
             return m;
         }
 
-        public static Maze LoadFromFile(string path)
+        public static Maze LoadFromFile(string path)//carga un laberinto dsd un fichero de texto con un formato específico: la primera línea contiene el número de filas y columnas, las siguientes líneas pueden contener anotaciones para marcar el inicio, la meta, pozos y monedas, y luego viene la representación del laberinto con caracteres que indican las paredes. Las líneas que comienzan con "#" se consideran comentarios y se ignoran.
         {
             string[] lines = File.ReadAllLines(path)
                 .Where(l => !string.IsNullOrWhiteSpace(l) && !l.TrimStart().StartsWith("#"))
