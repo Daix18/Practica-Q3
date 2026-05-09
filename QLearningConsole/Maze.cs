@@ -31,7 +31,7 @@ namespace QLearningConsole
         private readonly double[] _cellPitProb;//probabilidad de morir al caer en un pozo
 
         public double RewardGoal { get; set; } = 100.0;
-        public double RewardStep { get; set; } = -1.0;
+        public double RewardStep { get; set; } = -1.0;//recompensa por paso.
         public double RewardPit { get; set; } = -100.0;//muerte penaliza con recompensa negativa alta
         public double RewardCoin { get; set; } = 10.0;//recompensa por recoger una moneda
 
