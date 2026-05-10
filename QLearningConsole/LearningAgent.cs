@@ -91,7 +91,7 @@ namespace QLearningConsole
 
         /// Ejecuta un episodio completo desde env.StartState hasta el final (terminal o maxSteps).
         /// Devuelve pasos, recompensa total y si se alcanzó la meta.
-        public EpisodeResult RunEpisode(Maze env, int maxSteps = 500)
+        public EpisodeResult RunEpisode(Maze env, int maxSteps)
         {
             // TODO: bucle de episodio
             //  1) resetear state = env.StartState

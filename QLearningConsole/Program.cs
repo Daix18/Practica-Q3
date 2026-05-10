@@ -53,16 +53,11 @@ namespace QLearningConsole
 
             //  2. Llamar Experiment.Run.
                 ExperimentResult result = Experiment.Run(env, config);
-    
-                Experiment.PrintSummary(result);
+                //Experiment.PrintSummary(result);
+               
+            //  3. Mostrar la política y la Q-Table final.
                 Visualizer.PrintPolicy(result.Agent!, env);
                 Visualizer.PrintQTable(result.Agent!, env);
-    
-                // (Opcional) Exportar curva de aprendizaje a CSV para graficar en Excel.
-                string csvPath = "learning_curve.csv";
-                Experiment.ExportCsv(result, csvPath);
-                Console.WriteLine($"Curva de aprendizaje exportada a {csvPath}");
-            //  3. Mostrar la política y la Q-Table final.
             //  4. (Opcional) Exportar curva de aprendizaje a CSV para graficar.
 
             Console.WriteLine("Implementa las clases LearningAgent, Visualizer y Experiment.");

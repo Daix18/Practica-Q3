@@ -36,10 +36,34 @@ namespace QLearningConsole
         /// Entrena un agente durante N episodios. Opcional: decaer ε linealmente de EpsilonStart a EpsilonEnd.
         public static ExperimentResult Run(Maze env, ExperimentConfig cfg)
         {
+            //Crear un cronómetro para medir el tiempo de entrenamiento
+            Stopwatch cronometro = System.Diagnostics.Stopwatch.StartNew();
+            //Variable para almacenar los resultados del experimento
+            ExperimentResult finalresult = new ExperimentResult { Config = cfg };
             // TODO: crear LearningAgent con (env.NumStates, env.NumActions, algo, alpha, gamma, epsilon, seed)
             LearningAgent agent = new LearningAgent(env.NumStates, env.NumActions, cfg.Algo, cfg.Alpha, cfg.Gamma, cfg.EpsilonStart, cfg.Seed);
+
+            //decirle al resultado que agente ha sido creado pra q guarde resultado del entrenamiento de ese agente concreto
+            finalresult.Agent = agent;
+
             // TODO: bucle de episodios, decaer epsilon, acumular EpisodeResult, cronometrar con Stopwatch
-            throw new NotImplementedException();
+            for (int i = 0; i < cfg.Episodes; i++)
+            {
+                //decaer epsilon linealmente de EpsilonStart a EpsilonEnd a lo largo de los episodios
+                double progresoEpisodio = (cfg.Episodes > 1) ? (double)i / (cfg.Episodes - 1) : 1.0;
+                agent.Epsilon = cfg.EpsilonStart + progresoEpisodio * (cfg.EpsilonEnd - cfg.EpsilonStart);// empieza en 1 y decae a 0.05 a lo largo de los episodios
+
+                //ejecutar episodio y obtener su resultado
+                EpisodeResult episodeResult = agent.RunEpisode(env, cfg.MaxStepsPerEpisode);
+
+                //guardar su resultado en la lista de resultados del experimento
+                finalresult.Episodes.Add(episodeResult);
+            }
+            // al terminar los episodios parar el cronómetro y guardar el tiempo transcurrido del experimento
+            cronometro.Stop();
+            finalresult.ElapsedMs = cronometro.ElapsedMilliseconds;
+
+            return finalresult;//devolver el resultado del experimento (con la configuración, los resultados de cada episodio, el tiempo total y el agente entrenado)
         }
 
         /// Volcar curva de aprendizaje a CSV (episode,steps,reward,reached) para graficar en Excel.
