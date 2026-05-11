@@ -16,7 +16,10 @@ namespace QLearningConsole
             Console.WriteLine();
 
             // Entorno (Maze) ya implementado en Maze.cs
-            Maze env = Maze.BuildDefault5x5();
+            //Maze env = Maze.BuildDefault5x5(); --> laberinto básico sin pozos ni monedas
+            //Maze env = Maze.BuildDefault5x5WithHazards(); //--> laberinto con un pozo en el centro (50% de morir al caer) y monedas con bonificaciones en dos celdas
+            string rutaMapa = "../../../mapa_ejemplo.txt";
+            Maze env = Maze.LoadFromFile(rutaMapa);
             Console.WriteLine("Mapa:");
             Visualizer.PrintMaze(env);
 
@@ -58,8 +61,14 @@ namespace QLearningConsole
             //  3. Mostrar la política y la Q-Table final.
                 Visualizer.PrintPolicy(result.Agent!, env);
                 Visualizer.PrintQTable(result.Agent!, env);
-            //  4. (Opcional) Exportar curva de aprendizaje a CSV para graficar.
 
+            //Imprimir resumen del experimento (configuración, métricas finales, tiempo de entrenamiento, etc.)
+            Experiment.PrintSummary(result);
+
+            //  4. (Opcional) Exportar curva de aprendizaje a CSV para graficar.
+            //string csvPath = "learning_curve.csv";
+            //Experiment.ExportCsv(result, csvPath);
+            Visualizer.PrintExecutionPath(result.Agent!, env);
             Console.WriteLine("Implementa las clases LearningAgent, Visualizer y Experiment.");
         }
 
@@ -88,6 +97,17 @@ namespace QLearningConsole
                 config.Gamma = gamma;
             }
             else Console.WriteLine("Entrada no válida, se usará 0.95 por defecto.");
+
+
+            //epsilon -> probabilidad de explorar (elegir acción aleatoria) en lugar de explotar (elegir la mejor acción según Q). 1 es explorar siempre, 0 explotar siempre. 
+            Console.WriteLine("Introduce el valor de ε (probabilidad de explorar, entre 0 y 1):");
+            if (double.TryParse(Console.ReadLine(), out double epsilon) && epsilon >=0.5 && epsilon <= 1)
+            {
+                config.EpsilonStart = epsilon;
+            }
+            else Console.WriteLine("Entrada no válida, se usará 1 por defecto.");
+
+
 
             //Recompesa por moverse, por alcanzar la meta.
             Console.WriteLine("Introduce la recompensa por moverse (valor negativo recomendado o 0):");

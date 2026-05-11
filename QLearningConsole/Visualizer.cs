@@ -133,6 +133,53 @@ namespace QLearningConsole
             }
         }
 
+        public static void PrintExecutionPath(LearningAgent agent, Maze m)
+        {
+            Console.WriteLine("\n--- TRAYECTORIA ÓPTIMA (S -> G) ---");
+
+            int current = m.StartState;
+            int steps = 0;
+            bool reached = false;
+
+            // Lista para ir guardando las coordenadas
+            var pathCoords = new List<string>();
+
+            while (steps < m.NumStates) // Límite lógico para evitar bucles si no ha aprendido
+            {
+                (int r, int c) = m.ToRowCol(current);
+                pathCoords.Add($"({r},{c})");
+
+                if (m.KindOf(current) == CellKind.Goal)
+                {
+                    reached = true;
+                    break;
+                }
+
+                // Elegimos la mejor acción sin azar (explotación pura)
+                int bestA = agent.ArgMaxAction(current);
+
+                // Calculamos el siguiente estado
+                (int next, _, _) = m.Step(current, (Action)bestA, new Random());
+
+                if (next == current) // Se ha chocado o no sabe a dónde ir
+                {
+                    pathCoords.Add("¡CHOQUE O BLOQUEO!");
+                    break;
+                }
+
+                current = next;
+                steps++;
+            }
+
+            // Imprimimos el camino con flechitas
+            Console.WriteLine(string.Join(" ➔ ", pathCoords));
+
+            if (reached)
+                Console.WriteLine($"\n¡Éxito! Meta alcanzada en {steps} pasos.");
+            else
+                Console.WriteLine("\nEl agente no logró encontrar un camino directo a la meta.");
+        }
+
         private static void PrintHorizontalLine(int cols)
         {
             Console.WriteLine(new string('-', cols * 10 + 1));
