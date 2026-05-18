@@ -54,13 +54,17 @@ namespace QLearningConsole
                 }
             }
 
+            //Tras personalizar, imprimir la configuración del experimento antes de ejecutarlo
+            Visualizer.PrintExperimentConfig(config, env);
             //  2. Llamar Experiment.Run.
-                ExperimentResult result = Experiment.Run(env, config);
+            ExperimentResult result = Experiment.Run(env, config);
                 //Experiment.PrintSummary(result);
                
-            //  3. Mostrar la política y la Q-Table final.
+            //  3. Mostrar la política la Q-Table final y el HeatMap
                 Visualizer.PrintPolicy(result.Agent!, env);
                 Visualizer.PrintQTable(result.Agent!, env);
+                Visualizer.PrintHeatmap(result.Agent!, env);
+
 
             //Imprimir resumen del experimento (configuración, métricas finales, tiempo de entrenamiento, etc.)
             Experiment.PrintSummary(result);
@@ -70,6 +74,12 @@ namespace QLearningConsole
             //Experiment.ExportCsv(result, csvPath);
             Visualizer.PrintExecutionPath(result.Agent!, env);
             Console.WriteLine("Implementa las clases LearningAgent, Visualizer y Experiment.");
+
+            // 2. Definir el nombre del archivo (puedes diferenciar por algoritmo)
+            string nombreArchivo = $"resultados_{config.Algo}_{DateTime.Now:HHmmss}.csv";
+
+            // 3. Exportar a CSV
+            Experiment.ExportCsv(result, nombreArchivo);
         }
 
        

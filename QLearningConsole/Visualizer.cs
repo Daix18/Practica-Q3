@@ -116,7 +116,7 @@ namespace QLearningConsole
         public static void PrintHeatmap(LearningAgent agent, Maze m)
         {
             // DONE: imprimir V(s) = max_a Q[s,a] en forma de cuadrícula 2D
-            Console.WriteLine("(pendiente) PrintHeatmap");
+            //Console.WriteLine("(pendiente) PrintHeatmap");
             PrintHorizontalLine(m.Cols);
 
             for (int r = 0; r < m.Rows; r++)
@@ -184,5 +184,26 @@ namespace QLearningConsole
         {
             Console.WriteLine(new string('-', cols * 10 + 1));
         }
+
+
+        public static void PrintExperimentConfig(ExperimentConfig cfg, Maze m)
+        {
+            Console.WriteLine("\n" + new string('=', 50));
+            Console.WriteLine("       CONFIGURACIÓN DEL EXPERIMENTO");
+            Console.WriteLine(new string('=', 50));
+
+            // Mostramos los parámetros que pide el enunciado
+            Console.WriteLine($"{"Algoritmo:",-25} {cfg.Algo}"); 
+            Console.WriteLine($"{"Learning rate (α):",-25} {cfg.Alpha}");
+            Console.WriteLine($"{"Discount rate (γ):",-25} {cfg.Gamma}"); 
+            Console.WriteLine($"{"Epsilon (init/end):",-25} {cfg.EpsilonStart} / {cfg.EpsilonEnd}"); 
+            Console.WriteLine($"{"Número de episodios:",-25} {cfg.Episodes}"); 
+            Console.WriteLine($"{"Recompensa meta:",-25} {m.RewardGoal}"); 
+            Console.WriteLine($"{"Recompensa movimiento:",-25} {m.RewardStep}"); 
+            Console.WriteLine($"{"Semilla aleatoria:",-25} {cfg.Seed}");
+
+            Console.WriteLine(new string('-', 50));
+        }
+
     }
 }
