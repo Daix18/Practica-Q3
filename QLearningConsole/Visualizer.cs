@@ -91,7 +91,7 @@ namespace QLearningConsole
         public static void PrintQTable(LearningAgent agent, Maze m)
         {
             // DONE: imprimir la tabla Q con columnas: Estado (r,c) | Up | Right | Down | Left
-            Console.WriteLine("(pendiente) PrintQTable");
+      
             Console.WriteLine("\n--- Tabla Q completa (Estado (r,c) | Up | Right | Down | Left) ---");
             Console.WriteLine(new string('-', 65));
             Console.WriteLine(" Estado (r,c) |    Up    |   Right  |   Down   |   Left   ");
