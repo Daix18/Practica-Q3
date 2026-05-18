@@ -16,10 +16,10 @@ namespace QLearningConsole
             Console.WriteLine();
 
             // Entorno (Maze) ya implementado en Maze.cs
-            //Maze env = Maze.BuildDefault5x5(); --> laberinto básico sin pozos ni monedas
+            Maze env = Maze.BuildDefault5x5(); //--> laberinto básico sin pozos ni monedas
             //Maze env = Maze.BuildDefault5x5WithHazards(); //--> laberinto con un pozo en el centro (50% de morir al caer) y monedas con bonificaciones en dos celdas
-            string rutaMapa = "../../../mapa_ejemplo.txt";
-            Maze env = Maze.LoadFromFile(rutaMapa);
+            //string rutaMapa = "../../../mapa_ejemplo.txt";
+            //Maze env = Maze.LoadFromFile(rutaMapa);
             Console.WriteLine("Mapa:");
             Visualizer.PrintMaze(env);
 
