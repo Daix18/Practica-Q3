@@ -86,12 +86,12 @@ namespace QLearningConsole
             // TODO: escribir cabecera y una fila por episodio
             //cabecera
             var EpisodeInfo =  new StringBuilder();
-            EpisodeInfo.AppendLine("Episode,Steps,Reward,Reached");
+            EpisodeInfo.AppendLine("Episode;Steps;Reward;Reached");
             for (int i = 0; i < r.Episodes.Count; i++)
             {
                 var e = r.Episodes[i];
               
-                EpisodeInfo.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0},{1},{2:F2},{3}", i, e.Steps, e.Reward, e.Reached ? 1 : 0)) ;
+                EpisodeInfo.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0};{1};{2:F2};{3}", i, e.Steps, e.Reward, e.Reached ? 1 : 0)) ;
 
             }
             File.WriteAllText(path, EpisodeInfo.ToString());
